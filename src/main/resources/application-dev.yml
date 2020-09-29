@@ -19,7 +19,7 @@ spring:
       max-file-size: 50MB
 
   jpa:
-    show-sql: true
+    show-sql: false
     database: mysql
     hibernate:
       ddl-auto: update

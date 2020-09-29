@@ -5,7 +5,9 @@ import java.sql.Timestamp;
 import icu.miners.micm.work.model.base.ResponseResult;
 import icu.miners.micm.work.model.entity.EmailTask;
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.service.HomeWorkService;
+import icu.miners.micm.work.service.StudentService;
 import icu.miners.micm.work.utils.EmailUtil;
 import icu.miners.micm.work.utils.FileUtil;
 import icu.miners.micm.work.utils.ZipUtil;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
@@ -33,6 +36,9 @@ class MicmWorkApplicationTests {
 
     @Resource
     HomeWorkService homeWorkService;
+
+    @Resource
+    StudentService studentService;
 
     @Test
     public void contextLoads() {
@@ -113,6 +119,18 @@ class MicmWorkApplicationTests {
 
         File file = new File("C:\\Users\\isColt\\Documents\\micm-work\\homework1.zip");
         EmailUtil.complexMail(emailTask, file, mailSender);
+    }
+
+    @Test
+    public void test06() {
+        Student student = new Student();
+        student.setId(1);
+        student.setNumber("00");
+        student.setPassword(DigestUtils.md5DigestAsHex("njpji00".getBytes()));
+        student.setEmail("1329208516@qq.com");
+        student.setRole((short)1);
+        student.setInit((short)1);
+        studentService.update(student);
     }
 
 }

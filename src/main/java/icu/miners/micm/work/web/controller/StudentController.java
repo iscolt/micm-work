@@ -18,6 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +52,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "api/student")
 @Transactional
+@CrossOrigin
 public class StudentController {
 
     @Resource
@@ -68,15 +70,21 @@ public class StudentController {
         if (student == null) {
             return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "用户不存在");
         }
-        String token = studentService.getToken(student);
+        if (student.isDeleted()) { // false 未冻结
+            return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "账号被冻结");
+        }
+        String token = null;
         if (!DigestUtils.md5DigestAsHex(loginParam.getPassword().getBytes()).equals(student.getPassword())) {
             if (student.getPassword() == null && student.getInit() == 0) { // 如果密码为空，并且还未初始化
                 student.setPassword(DigestUtils.md5DigestAsHex(loginParam.getPassword().getBytes()));
+                student.setInit((short)1);
                 studentService.update(student);
+                token = studentService.getToken(student);
                 return new ResponseResult<>(HttpStatus.OK.value(), "操作成功, 密码已经初始化!", token);
             }
             return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "用户名/密码错误");
         }
+        token = studentService.getToken(student);
         return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", token);
     }
 
@@ -100,6 +108,7 @@ public class StudentController {
         Student student = null;
         for (int i = 0; i < list.size(); i++) {
             List<Object> lo = list.get(i);
+            if (studentService.getByNumber(String.valueOf(lo.get(0))) != null) continue;
             student = new Student();
             student.setNumber(String.valueOf(lo.get(0)));
             student.setInit((short)0);
