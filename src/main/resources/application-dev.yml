@@ -1,0 +1,25 @@
+server:
+  port: 8082
+  tomcat:
+    uri-encoding: utf-8
+
+spring:
+  mail:
+    username: 1329208516@qq.com
+    password: gmqyawgqdtkngjcf
+    host: smtp.qq.com
+  datasource:
+    url: jdbc:mysql://localhost:3306/micm_work?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: 5211
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+
+  jpa:
+    show-sql: true
+    database: mysql
+    hibernate:
+      ddl-auto: update
