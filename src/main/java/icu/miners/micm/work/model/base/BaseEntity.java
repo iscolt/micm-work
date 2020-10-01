@@ -54,7 +54,7 @@ public class BaseEntity {
      */
     @PrePersist
     protected void prePersist() {
-        this.deleted = true;
+        this.deleted = false;
         if (created == null) {
             created = new Timestamp(new Date().getTime());
         }

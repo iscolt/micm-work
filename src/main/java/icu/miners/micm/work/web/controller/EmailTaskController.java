@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -51,15 +53,18 @@ public class EmailTaskController {
     @ApiOperation(value = "查看邮件任务列表")
     @UserLoginToken
     @CheckRole
-    @GetMapping("{status}")
+    @GetMapping(value = "{status}")
     public ResponseResult<List<EmailTask>> list(@PathVariable(value = "status") short status) {
-        return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", emailTaskService.listByStatus(status));
+        if (status != -1) {
+            return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", emailTaskService.listByStatus(status));
+        }
+        return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", emailTaskService.listAll());
     }
 
     @ApiOperation(value = "订阅作业提醒(默认提前6小时提醒)")
     @UserLoginToken
     @PostMapping("rss")
-    public ResponseResult<Void> list(HomeWork homeWork, Integer hour) {
+    public ResponseResult<Void> list(@RequestBody HomeWork homeWork, Integer hour) {
         if (hour == null) hour = 6;
         if (homeWork.getEnd() == null || homeWork.getEnd().getTime() < new Date().getTime()) {
             return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "订阅失败，无需订阅");

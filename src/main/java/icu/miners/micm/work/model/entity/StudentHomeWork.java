@@ -1,6 +1,7 @@
 package icu.miners.micm.work.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import icu.miners.micm.work.model.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -30,10 +32,11 @@ import java.util.Date;
  */
 @Data
 @Entity
-@Table(name = "homework")
+@Table(name = "student_homework")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class StudentHomeWork extends BaseEntity {
+@JsonIgnoreProperties(value={"hibernateLazyInitializer"})
+public class StudentHomeWork extends BaseEntity implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,20 +1,18 @@
 package icu.miners.micm.work.task;
 
-import icu.miners.micm.work.annotation.CheckRole;
 import icu.miners.micm.work.model.entity.EmailTask;
+import icu.miners.micm.work.model.entity.HomeWork;
 import icu.miners.micm.work.repository.EmailTaskRepository;
-import icu.miners.micm.work.service.EmailTaskService;
+import icu.miners.micm.work.service.HomeWorkService;
 import icu.miners.micm.work.utils.EmailUtil;
 import icu.miners.micm.work.utils.ZipUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.List;
@@ -40,10 +38,13 @@ public class TimedTask {
     @Resource
     private JavaMailSenderImpl mailSender;
 
+    @Resource
+    private HomeWorkService homeWorkService;
+
     @Scheduled(cron = "0/1 * * * * *") //每1秒启动一次
     public void checkEmailTask() {
         // 查询未发送的邮箱任务
-        List<EmailTask> emailTasks = emailTaskRepository.findAllByStatusAndSendDateLessThan((short) 0, new Date());
+        List<EmailTask> emailTasks = emailTaskRepository.findAllByStatusAndDeletedAndSendDateLessThan((short) 0, false, new Date());
         if(emailTasks.size() == 0) {
             return;
         }
@@ -70,5 +71,28 @@ public class TimedTask {
             }
         });
         emailTaskRepository.saveAll(emailTasks);
+    }
+
+    @Scheduled(cron = "* 1 * * * *") //每1秒启动一次
+    public void checkHomework() {
+        long now = new Date().getTime();
+        List<HomeWork> homeWork = homeWorkService.listAll();
+        if (homeWork.size() == 0) {
+            return;
+        }
+        homeWork.forEach(item -> {
+            if (now < item.getBegin().getTime() && item.getStatus() != 0) { // 设为未开始
+                item.setStatus((short) 0);
+            }
+
+            if (now > item.getBegin().getTime() && item.getStatus() != 1) { // 设为开始
+                item.setStatus((short) 1);
+            }
+
+            if (now > item.getEnd().getTime() && item.getStatus() != 2) { // 设为结束
+                item.setStatus((short) 2);
+            }
+        });
+        homeWorkService.updateInBatch(homeWork);
     }
 }
