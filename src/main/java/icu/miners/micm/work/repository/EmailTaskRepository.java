@@ -27,4 +27,6 @@ public interface EmailTaskRepository extends JpaRepository<EmailTask, Integer> {
     EmailTask findByHomeWorkAndToAddr(HomeWork homeWork, String toAddr);
 
     List<EmailTask> findAllByStatusAndDeletedAndSendDateLessThan(Short status, boolean deleted, Date sendDate);
+
+    EmailTask findByHomeWorkAndCategory(HomeWork homeWork, short category);
 }

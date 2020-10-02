@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 
 import icu.miners.micm.work.model.entity.EmailTask;
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.repository.EmailTaskRepository;
 import icu.miners.micm.work.repository.HomeWorkRepository;
 import icu.miners.micm.work.service.EmailTaskService;
 import icu.miners.micm.work.service.HomeWorkService;
@@ -36,6 +37,9 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
     @Resource
     private EmailTaskService emailTaskService;
 
+    @Resource
+    private EmailTaskRepository emailTaskRepository;
+
     protected HomeWorkServiceImpl(JpaRepository<HomeWork, Integer> repository) {
         super(repository);
     }
@@ -51,11 +55,14 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
         // 提交方式 0 打包邮箱发送 1 其他
         if (update.getSubMethod() == 0) {
             // 新建一个邮箱任务
-            EmailTask emailTask = new EmailTask();
-            emailTask.setFromAddr("1329208516@qq.com");
-            emailTask.setToAddr(homeWork.getSubEmail());
-            emailTask.setTitle("20转本计科01班-" + homeWork.getName());
-            emailTask.setCategory((short)0);
+            EmailTask emailTask = emailTaskRepository.findByHomeWorkAndCategory(update, (short) 0);
+            if (emailTask == null) {
+                emailTask = new EmailTask();
+                emailTask.setFromAddr("1329208516@qq.com");
+                emailTask.setToAddr(homeWork.getSubEmail());
+                emailTask.setTitle("20转本计科01班-" + homeWork.getName());
+                emailTask.setCategory((short)0);
+            }
             // TODO 作业结束5分钟 发送
             Date sendDate = new Date(homeWork.getEnd().getTime() + 300000);
             emailTask.setSendDate(sendDate);

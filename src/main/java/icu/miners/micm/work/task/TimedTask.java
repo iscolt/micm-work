@@ -73,7 +73,7 @@ public class TimedTask {
         emailTaskRepository.saveAll(emailTasks);
     }
 
-    @Scheduled(cron = "* 1 * * * *") //每1秒启动一次
+    @Scheduled(cron = "0/1 * * * * *") //每1秒启动一次
     public void checkHomework() {
         long now = new Date().getTime();
         List<HomeWork> homeWork = homeWorkService.listAll();

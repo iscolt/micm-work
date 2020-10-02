@@ -91,14 +91,17 @@ public class HomeWorkController {
         List<StudentHomeWork> studentHomeWorks = new ArrayList<>();
         students.forEach(student -> {
             if (student.getId() == 1) return; // TODO 初始账号不分配作业
-            StudentHomeWork studentHomeWork = new StudentHomeWork();
-            studentHomeWork.setStudent(student);
-            studentHomeWork.setHomeWork(update);
-            studentHomeWork.setStatus((short)0);
-            studentHomeWork.setSubTimes(0);
-            studentHomeWorks.add(studentHomeWork);
+            StudentHomeWork studentHomeWork = studentHomeWorkService.getByHomeWorkAndStudent(homeWork, student);
+            if (studentHomeWork == null) {
+                studentHomeWork = new StudentHomeWork();
+                studentHomeWork.setStudent(student);
+                studentHomeWork.setHomeWork(update);
+                studentHomeWork.setStatus((short)0);
+                studentHomeWork.setSubTimes(0);
+                studentHomeWorks.add(studentHomeWork);
+            }
         });
-        studentHomeWorkService.createInBatch(studentHomeWorks);
+        studentHomeWorkService.updateInBatch(studentHomeWorks);
         return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", update);
     }
 

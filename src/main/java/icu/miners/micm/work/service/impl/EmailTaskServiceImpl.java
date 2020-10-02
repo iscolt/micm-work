@@ -47,7 +47,7 @@ public class EmailTaskServiceImpl extends AbstractCrudService<EmailTask, Integer
         emailTask.setTitle("作业即将截至");
         emailTask.setContent("距离作业【"+homeWork.getName()+"】截至还有" + hour + "小时");
         emailTask.setCategory((short)1);
-        emailTask.setSendDate(new Date(homeWork.getEnd().getTime() - hour * 60 * 1000));
+        emailTask.setSendDate(new Date(homeWork.getEnd().getTime() - hour * 60 * 60 * 1000));
         emailTask.setStatus((short)0);
         emailTask.setHomeWork(homeWork);
         update(emailTask);
