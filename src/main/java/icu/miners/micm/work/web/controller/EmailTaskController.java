@@ -52,7 +52,6 @@ public class EmailTaskController {
 
     @ApiOperation(value = "查看邮件任务列表")
     @UserLoginToken
-    @CheckRole
     @GetMapping(value = "{status}")
     public ResponseResult<List<EmailTask>> list(@PathVariable(value = "status") short status) {
         if (status != -1) {

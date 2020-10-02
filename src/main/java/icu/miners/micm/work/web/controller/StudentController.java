@@ -121,7 +121,6 @@ public class StudentController {
 
     @ApiOperation(value = "学生列表")
     @UserLoginToken
-    @CheckRole
     @GetMapping("")
     public ResponseResult<List<Student>> list() {
         return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", studentService.listAll());
