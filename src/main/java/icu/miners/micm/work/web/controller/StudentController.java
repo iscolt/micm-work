@@ -3,6 +3,7 @@ package icu.miners.micm.work.web.controller;
 import icu.miners.micm.work.annotation.CheckRole;
 import icu.miners.micm.work.annotation.UserLoginToken;
 import icu.miners.micm.work.model.base.ResponseResult;
+import icu.miners.micm.work.model.dto.UserInfo;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.model.param.LoginParam;
 import icu.miners.micm.work.service.HomeWorkService;
@@ -69,7 +70,7 @@ public class StudentController {
      */
     @PostMapping("login")
     @ApiOperation(value = "用户登陆")
-    public ResponseResult<String> login(@RequestBody LoginParam loginParam) {
+    public ResponseResult<UserInfo> login(@RequestBody LoginParam loginParam) {
         Student student = studentService.getByNumber(loginParam.getNumber());
         if (student == null) {
             return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "用户不存在");
@@ -84,12 +85,12 @@ public class StudentController {
                 student.setInit((short)1);
                 studentService.update(student);
                 token = studentService.getToken(student);
-                return new ResponseResult<>(HttpStatus.OK.value(), "操作成功, 密码已经初始化!", token);
+                return new ResponseResult<>(HttpStatus.OK.value(), "操作成功, 密码已经初始化!", new UserInfo(token, student.getRole()));
             }
             return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "用户名/密码错误");
         }
         token = studentService.getToken(student);
-        return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", token);
+        return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", new UserInfo(token, student.getRole()));
     }
 
     @ApiOperation(value = "导入学生")
@@ -164,5 +165,16 @@ public class StudentController {
         student.setDeleted(!student.isDeleted());
         studentService.update(student);
         return new ResponseResult<>(HttpStatus.OK.value(), "操作成功");
+    }
+
+    @ApiOperation(value = "判断角色")
+    @UserLoginToken
+    @GetMapping("/check/role")
+    public ResponseResult<Boolean> checkRole(@PathVariable(value = "stuId") Integer stuId) {
+        Student student = studentService.fetchById(stuId).orElse(null);
+        if (student == null) {
+            return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "无此用户");
+        }
+        return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", student.getRole() == 1);
     }
 }

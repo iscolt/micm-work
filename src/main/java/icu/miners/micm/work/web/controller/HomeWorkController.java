@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import icu.miners.micm.work.annotation.CheckRole;
 import icu.miners.micm.work.annotation.UserLoginToken;
 import icu.miners.micm.work.model.base.ResponseResult;
+import icu.miners.micm.work.model.dto.HomeWorkDTOFactory;
 import icu.miners.micm.work.model.entity.EmailTask;
 import icu.miners.micm.work.model.entity.HomeWork;
 import icu.miners.micm.work.model.entity.Student;
@@ -42,6 +43,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * xx
@@ -77,14 +79,31 @@ public class HomeWorkController {
     @Resource
     private StudentHomeWorkService studentHomeWorkService;
 
+    @Resource
+    private HomeWorkDTOFactory homeWorkDTOFactory;
+
     @ApiOperation(value = "查看作业列表 0 未开始 1 进行中 2 已结束")
-    @UserLoginToken
     @GetMapping(value = "{status}")
     public ResponseResult<List<HomeWork>> listByStatus(@PathVariable(value = "status") short status) {
         if (status == -1) {
             return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", homeWorkService.listAll());
         }
         return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", homeWorkService.listByStatus(status));
+    }
+
+    @ApiOperation(value = "查看自己的作业")
+    @UserLoginToken
+    @GetMapping(value = "owner")
+    public ResponseResult<List<HomeWorkDTOFactory.HomeWorkDTO>> owner() {
+        Student student = studentService.getCurrentUser();
+        if (student == null) {
+            return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "用户不存在");
+        }
+        List<StudentHomeWork> studentHomeWorks = studentHomeWorkService.findByStudent(student);
+        return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", studentHomeWorks
+                .stream()
+                .map(HomeWorkDTOFactory::buildDTO)
+                .collect(Collectors.toList()));
     }
 
     @ApiOperation(value = "发布作业")
@@ -114,6 +133,7 @@ public class HomeWorkController {
 
     @ApiOperation(value = "查看提交情况")
     @UserLoginToken
+    @CheckRole
     @GetMapping("student/{homeworkId}")
     public ResponseResult<List<StudentHomeWork>> students(@PathVariable(value = "homeworkId") Integer homeworkId) {
         HomeWork homeWork = homeWorkService.fetchById(homeworkId).orElse(null);
@@ -126,7 +146,6 @@ public class HomeWorkController {
 
     @ApiOperation(value = "提交作业")
     @UserLoginToken
-    @CheckRole
     @PostMapping("student/sub/{homeworkId}")
     public ResponseResult<List<StudentHomeWork>> subHomeWork(@PathVariable(value = "homeworkId") Integer homeworkId
             , @RequestParam("file") MultipartFile file) {

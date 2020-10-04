@@ -47,7 +47,7 @@ public class StudentHomeWork extends BaseEntity implements Serializable {
     private Student student;
 
     @JoinColumn(name = "homework")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private HomeWork homeWork;
 
     @Column(name = "status")

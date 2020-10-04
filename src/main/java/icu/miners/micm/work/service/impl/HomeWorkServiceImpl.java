@@ -111,7 +111,12 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
         studentHomeWorks.forEach(studentHomeWork -> {
             ids.add(studentHomeWork.getHomeWork().getId());
         });
-        List<HomeWork> homework = homeWorkRepository.findByIdNotIn(ids);
+        List<HomeWork> homework = new ArrayList<>();
+        if (ids.size() == 0) {
+            homework = homeWorkRepository.findAll();
+        } else {
+            homework = homeWorkRepository.findByIdNotIn(ids);
+        }
         List<StudentHomeWork> newStudentHomeWorks = new ArrayList<>();
         homework.forEach(item -> {
             StudentHomeWork studentHomeWork = new StudentHomeWork();

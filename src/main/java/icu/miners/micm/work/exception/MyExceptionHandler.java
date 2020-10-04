@@ -17,6 +17,6 @@ public class MyExceptionHandler {
 	@ResponseBody
 	private ResponseResult<Object> handlerErrorInfo(HttpServletRequest request, Exception e) {
 		log.error(e.getMessage());
-		return new ResponseResult<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器异常");
+		return new ResponseResult<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
 	}
 }
