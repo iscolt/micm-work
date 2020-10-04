@@ -1,6 +1,7 @@
 package icu.miners.micm.work.service;
 
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.StudentHomeWork;
 import icu.miners.micm.work.service.base.CrudService;
 
 import java.util.List;

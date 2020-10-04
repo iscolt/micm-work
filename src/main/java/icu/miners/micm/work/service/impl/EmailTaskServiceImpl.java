@@ -53,4 +53,9 @@ public class EmailTaskServiceImpl extends AbstractCrudService<EmailTask, Integer
         update(emailTask);
     }
 
+    @Override
+    public List<EmailTask> findByHomework(HomeWork homeWork) {
+        return emailTaskRepository.findAllByHomeWork(homeWork);
+    }
+
 }

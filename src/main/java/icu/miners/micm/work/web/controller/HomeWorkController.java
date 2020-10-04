@@ -9,10 +9,12 @@ import java.sql.Timestamp;
 import icu.miners.micm.work.annotation.CheckRole;
 import icu.miners.micm.work.annotation.UserLoginToken;
 import icu.miners.micm.work.model.base.ResponseResult;
+import icu.miners.micm.work.model.entity.EmailTask;
 import icu.miners.micm.work.model.entity.HomeWork;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.model.entity.StudentHomeWork;
 import icu.miners.micm.work.model.param.LoginParam;
+import icu.miners.micm.work.service.EmailTaskService;
 import icu.miners.micm.work.service.HomeWorkService;
 import icu.miners.micm.work.service.StudentHomeWorkService;
 import icu.miners.micm.work.service.StudentService;
@@ -66,6 +68,9 @@ public class HomeWorkController {
 
     @Resource
     private HomeWorkService homeWorkService;
+
+    @Resource
+    private EmailTaskService emailTaskService;
 
     @Resource
     private StudentHomeWorkService studentHomeWorkService;
@@ -181,7 +186,13 @@ public class HomeWorkController {
     @CheckRole
     @DeleteMapping("{homeworkId}")
     public ResponseResult<Void> delete(@PathVariable(value = "homeworkId") Integer homeworkId) {
-        homeWorkService.removeById(homeworkId);
+        HomeWork homeWork = new HomeWork();
+        homeWork.setId(homeworkId);
+        List<EmailTask> emailTasks = emailTaskService.findByHomework(homeWork);
+        List<StudentHomeWork> studentHomeWorks = studentHomeWorkService.findByHomework(homeWork);
+        homeWorkService.removeById(homeworkId); // 删除作业
+        emailTaskService.removeAll(emailTasks); // 删除作业的邮箱任务
+        studentHomeWorkService.removeAll(studentHomeWorks); // 删除学生作业关系
         return new ResponseResult<>(HttpStatus.OK.value(), "操作成功");
     }
 

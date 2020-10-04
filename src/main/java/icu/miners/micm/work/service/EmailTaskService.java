@@ -28,4 +28,6 @@ public interface EmailTaskService extends CrudService<EmailTask, Integer> {
      * @param student
      */
     void warnRss(HomeWork homeWork, Student student, Integer hour);
+
+    List<EmailTask> findByHomework(HomeWork homeWork);
 }
