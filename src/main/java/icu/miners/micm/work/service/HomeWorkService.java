@@ -1,6 +1,7 @@
 package icu.miners.micm.work.service;
 
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.model.entity.StudentHomeWork;
 import icu.miners.micm.work.service.base.CrudService;
 
@@ -40,4 +41,10 @@ public interface HomeWorkService extends CrudService<HomeWork, Integer> {
      * @return
      */
     String getHomeWorkFolderPath(HomeWork homeWork);
+
+    /**
+     * 分配作业（未分配的）
+     * @param student
+     */
+    void assignHomeWork(Student student);
 }

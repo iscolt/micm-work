@@ -25,4 +25,6 @@ public interface StudentHomeWorkService extends CrudService<StudentHomeWork, Int
     StudentHomeWork getByHomeWorkAndStudent(HomeWork homeWork, Student student);
 
     List<StudentHomeWork> findByHomework(HomeWork homeWork);
+
+    List<StudentHomeWork> findByStudent(Student student);
 }

@@ -1,13 +1,16 @@
 package icu.miners.micm.work.service.impl;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.sql.Timestamp;
 
 import icu.miners.micm.work.model.entity.EmailTask;
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.model.entity.StudentHomeWork;
 import icu.miners.micm.work.repository.EmailTaskRepository;
 import icu.miners.micm.work.repository.HomeWorkRepository;
+import icu.miners.micm.work.repository.StudentHomeWorkRepository;
 import icu.miners.micm.work.service.EmailTaskService;
 import icu.miners.micm.work.service.HomeWorkService;
 import icu.miners.micm.work.service.base.AbstractCrudService;
@@ -40,6 +43,9 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
 
     @Resource
     private EmailTaskRepository emailTaskRepository;
+
+    @Resource
+    private StudentHomeWorkRepository studentHomeWorkRepository;
 
     protected HomeWorkServiceImpl(JpaRepository<HomeWork, Integer> repository) {
         super(repository);
@@ -96,5 +102,25 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
     @Override
     public String getHomeWorkFolderPath(HomeWork homeWork) {
         return "micm-work" + File.separator + "homework" + homeWork.getId();
+    }
+
+    @Override
+    public void assignHomeWork(Student student) {
+        List<StudentHomeWork> studentHomeWorks = studentHomeWorkRepository.findAllByStudent(student);
+        List<Integer> ids = new ArrayList<>(); // 已经分配的作业ID TODO 可以直接用SQL解决
+        studentHomeWorks.forEach(studentHomeWork -> {
+            ids.add(studentHomeWork.getHomeWork().getId());
+        });
+        List<HomeWork> homework = homeWorkRepository.findByIdNotIn(ids);
+        List<StudentHomeWork> newStudentHomeWorks = new ArrayList<>();
+        homework.forEach(item -> {
+            StudentHomeWork studentHomeWork = new StudentHomeWork();
+            studentHomeWork.setStudent(student);
+            studentHomeWork.setHomeWork(item);
+            studentHomeWork.setStatus((short)0);
+            studentHomeWork.setSubTimes(0);
+            newStudentHomeWorks.add(studentHomeWork);
+        });
+        studentHomeWorkRepository.saveAll(newStudentHomeWorks);
     }
 }

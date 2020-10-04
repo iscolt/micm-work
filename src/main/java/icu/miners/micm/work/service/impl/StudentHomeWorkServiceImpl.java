@@ -47,4 +47,9 @@ public class StudentHomeWorkServiceImpl extends AbstractCrudService<StudentHomeW
     public List<StudentHomeWork> findByHomework(HomeWork homeWork) {
         return studentHomeWorkRepository.findAllByHomeWork(homeWork);
     }
+
+    @Override
+    public List<StudentHomeWork> findByStudent(Student student) {
+        return studentHomeWorkRepository.findAllByStudent(student);
+    }
 }

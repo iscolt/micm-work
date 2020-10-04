@@ -25,4 +25,6 @@ public interface StudentHomeWorkRepository extends JpaRepository<StudentHomeWork
     List<StudentHomeWork> findAllByHomeWork(HomeWork homeWork);
 
     StudentHomeWork findByHomeWorkAndStudent(HomeWork homeWork, Student student);
+
+    List<StudentHomeWork> findAllByStudent(Student student);
 }

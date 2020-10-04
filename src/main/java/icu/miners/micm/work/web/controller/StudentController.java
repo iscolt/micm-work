@@ -5,6 +5,7 @@ import icu.miners.micm.work.annotation.UserLoginToken;
 import icu.miners.micm.work.model.base.ResponseResult;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.model.param.LoginParam;
+import icu.miners.micm.work.service.HomeWorkService;
 import icu.miners.micm.work.service.StudentService;
 import icu.miners.micm.work.utils.ExcelUtil;
 import io.swagger.annotations.Api;
@@ -57,6 +58,9 @@ public class StudentController {
 
     @Resource
     private StudentService studentService;
+
+    @Resource
+    private HomeWorkService homeWorkService;
 
     /**
      * 用户登陆接口
@@ -152,6 +156,10 @@ public class StudentController {
         Student student = studentService.fetchById(stuId).orElse(null);
         if (student == null) {
             return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "无此用户");
+        }
+        // 解冻后，分配还未分配的作业
+        if (student.isDeleted()) { // 冻结中
+            homeWorkService.assignHomeWork(student);
         }
         student.setDeleted(!student.isDeleted());
         studentService.update(student);

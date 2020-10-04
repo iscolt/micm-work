@@ -4,6 +4,7 @@ import icu.miners.micm.work.model.entity.HomeWork;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,4 +22,6 @@ import java.util.List;
 public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
 
     List<HomeWork> findAllByStatus(short status);
+
+    List<HomeWork> findByIdNotIn(List<Integer> ids);
 }
