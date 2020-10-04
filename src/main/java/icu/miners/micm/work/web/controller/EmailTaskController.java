@@ -10,6 +10,7 @@ import icu.miners.micm.work.service.EmailTaskService;
 import icu.miners.micm.work.service.StudentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -42,6 +43,7 @@ import java.util.List;
 @RequestMapping(value = "api/email/task")
 @Transactional
 @CrossOrigin
+@Slf4j
 public class EmailTaskController {
 
     @Resource
@@ -64,15 +66,20 @@ public class EmailTaskController {
     @UserLoginToken
     @PostMapping("rss")
     public ResponseResult<Void> list(@RequestBody HomeWork homeWork, Integer hour) {
-        if (hour == null) hour = 6;
-        if (homeWork.getEnd() == null || homeWork.getEnd().getTime() < new Date().getTime()) {
-            return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "订阅失败，无需订阅");
+        try {
+            if (hour == null) hour = 6;
+            if (homeWork.getEnd() == null || homeWork.getEnd().getTime() < new Date().getTime()) {
+                return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "订阅失败，无需订阅");
+            }
+            Student student = studentService.getCurrentUser();
+            if (student == null || student.getEmail() == null) {
+                return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "未绑定邮箱");
+            }
+            emailTaskService.warnRss(homeWork, student, hour);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseResult<>(500, "服务器异常");
         }
-        Student student = studentService.getCurrentUser();
-        if (student == null || student.getEmail() == null) {
-            return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "未绑定邮箱");
-        }
-        emailTaskService.warnRss(homeWork, student, hour);
         return new ResponseResult<>(HttpStatus.OK.value(), "操作成功");
     }
 

@@ -21,6 +21,7 @@ import icu.miners.micm.work.service.StudentService;
 import icu.miners.micm.work.utils.FileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +59,7 @@ import java.util.Optional;
 @RequestMapping(value = "api/homework")
 @Transactional
 @CrossOrigin
+@Slf4j
 public class HomeWorkController {
 
     @Resource
@@ -173,9 +175,10 @@ public class HomeWorkController {
             studentHomeWork.setResource(fileName);
             return new ResponseResult<>(HttpStatus.OK.value(), "操作成功");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return new ResponseResult<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "上传失败, " + e.getMessage());
         } catch (IOException e) {
+            log.error(e.getMessage());
             e.printStackTrace();
             return new ResponseResult<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "上传失败, " + e.getMessage());
         }
