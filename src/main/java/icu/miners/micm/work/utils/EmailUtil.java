@@ -1,6 +1,7 @@
 package icu.miners.micm.work.utils;
 
 import icu.miners.micm.work.model.entity.EmailTask;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,6 +21,7 @@ import java.io.File;
  * @see: icu.miners.micm.work.utils
  * @version: v1.0.0
  */
+@Slf4j
 public class EmailUtil {
 
     public static boolean simpleMail(EmailTask emailTask, JavaMailSenderImpl mailSender) {
@@ -33,7 +35,7 @@ public class EmailUtil {
             message.setFrom(emailTask.getFromAddr());
             mailSender.send(message);
         } catch (Exception e) {
-            System.out.println(e);
+            log.error("simpleMail: " + e.getMessage());
             return false;
         }
         return true;
@@ -62,7 +64,7 @@ public class EmailUtil {
             mailSender.send(mimeMessage);
             System.out.println("成功");
         } catch (Exception e) {
-            System.out.println(e);
+            log.error("complexMail: " + e.getMessage());
             return false;
         }
         return true;

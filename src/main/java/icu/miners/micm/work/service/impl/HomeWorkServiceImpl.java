@@ -61,7 +61,7 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
         HomeWork update = update(homeWork);
         // 提交方式 0 打包邮箱发送 1 其他
         if (update.getSubMethod() == 0) {
-            // 新建一个邮箱任务
+            // 新建一个邮箱任务 TODO 更新所有相关邮箱任务发送的时间
             EmailTask emailTask = emailTaskRepository.findByHomeWorkAndCategory(update, (short) 0);
             if (emailTask == null) {
                 emailTask = new EmailTask();

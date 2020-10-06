@@ -6,6 +6,7 @@ import icu.miners.micm.work.repository.EmailTaskRepository;
 import icu.miners.micm.work.service.HomeWorkService;
 import icu.miners.micm.work.utils.EmailUtil;
 import icu.miners.micm.work.utils.ZipUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -30,6 +31,7 @@ import java.util.List;
  */
 @Configuration
 @EnableScheduling
+@Slf4j
 public class TimedTask {
 
     @Resource
@@ -50,6 +52,7 @@ public class TimedTask {
         }
         // 批量发送
         emailTasks.forEach(emailTask -> {
+            boolean isSuccess = false;
             try {
                 String pathname = emailTask.getResource() + File.separator + "20计科转本01班-" + emailTask.getTitle() + ".zip";
                 if (emailTask.getCategory() == 0) { // 0 打包提交到老师邮箱, 1 作业提交提醒
@@ -59,15 +62,19 @@ public class TimedTask {
 
                     ZipUtil.toZip(emailTask.getResource(), fos1,true);
                     File file = new File(pathname);
-                    EmailUtil.complexMail(emailTask, file, mailSender);
+                    isSuccess = EmailUtil.complexMail(emailTask, file, mailSender);
                 }
                 if (emailTask.getCategory() == 1) {
-                    EmailUtil.simpleMail(emailTask, mailSender);
+                    isSuccess = EmailUtil.simpleMail(emailTask, mailSender);
                 }
-                emailTask.setStatus((short)1);
+                if (isSuccess) {
+                    emailTask.setStatus((short)1);
+                } else {
+                    emailTask.setStatus((short)2);
+                }
             } catch (Exception e) {
-                e.printStackTrace();
                 emailTask.setStatus((short)2);
+                log.error(this.getClass().getName() + ": " + e.getMessage());
             }
         });
         emailTaskRepository.saveAll(emailTasks);
