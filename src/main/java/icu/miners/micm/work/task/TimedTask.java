@@ -54,7 +54,7 @@ public class TimedTask {
         emailTasks.forEach(emailTask -> {
             boolean isSuccess = false;
             try {
-                String pathname = emailTask.getResource() + File.separator + "20计科转本01班-" + emailTask.getTitle() + ".zip";
+                String pathname = emailTask.getResource() + File.separator + emailTask.getTitle() + ".zip";
                 if (emailTask.getCategory() == 0) { // 0 打包提交到老师邮箱, 1 作业提交提醒
                     FileOutputStream fos1 = null;
 

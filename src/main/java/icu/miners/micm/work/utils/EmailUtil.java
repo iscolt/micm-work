@@ -54,7 +54,11 @@ public class EmailUtil {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             //邮件设置
             helper.setSubject(emailTask.getTitle());
-            helper.setText(emailTask.getContent(),true);//开启html格式
+            if (emailTask.getContent() == null) {
+                helper.setText("作业上交【由<a href='http://work.iscolt.com' target='_blank'>系统</a>发送】",true);//开启html格式
+            } else {
+                helper.setText(emailTask.getContent(),true);//开启html格式
+            }
 
             helper.setTo(emailTask.getToAddr());
             helper.setFrom(emailTask.getFromAddr());
@@ -62,7 +66,7 @@ public class EmailUtil {
             //上传文件
             helper.addAttachment(file.getName(), file);
             mailSender.send(mimeMessage);
-            System.out.println("成功");
+            System.out.println("成功发送邮件，文件名：" + file.getName());
         } catch (Exception e) {
             log.error("complexMail: " + e.getMessage());
             return false;

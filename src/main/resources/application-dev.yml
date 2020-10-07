@@ -8,6 +8,18 @@ spring:
     username: 1329208516@qq.com
     password: gmqyawgqdtkngjcf
     host: smtp.qq.com
+    port: 465
+    properties:
+      mail:
+         smtp:
+            auth: true
+            socketFactory:
+               port: 465
+               class: javax.net.ssl.SSLSocketFactory
+               fallback: false
+            starttls:
+               enable: true
+               required: true
   datasource:
     url: jdbc:mysql://localhost:3306/micm_work?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
