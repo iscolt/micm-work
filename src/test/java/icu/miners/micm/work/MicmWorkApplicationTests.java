@@ -11,6 +11,11 @@ import icu.miners.micm.work.service.StudentService;
 import icu.miners.micm.work.utils.EmailUtil;
 import icu.miners.micm.work.utils.FileUtil;
 import icu.miners.micm.work.utils.ZipUtil;
+import org.apache.commons.jexl3.JexlContext;
+import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlExpression;
+import org.apache.commons.jexl3.MapContext;
+import org.apache.commons.jexl3.internal.Engine;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +32,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootTest
 class MicmWorkApplicationTests {
@@ -132,5 +139,32 @@ class MicmWorkApplicationTests {
 //        student.setInit((short)1);
 //        studentService.update(student);
 //    }
+
+    private static JexlEngine jexlEngine = new Engine();
+
+    public static Object executeExpression(String jexlExpression, Map<String, Object> map) {
+        JexlExpression expression = jexlEngine.createExpression(jexlExpression);
+        JexlContext context = new MapContext();
+        map.forEach(context::set);
+        return expression.evaluate(context);
+    }
+    @Test
+    public void test07() {
+        Student student = new Student();
+        student.setNumber("12");
+        student.setEmail("123@qq.com");
+        String code = "number + symbol + email + symbol + subject";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("number", student.getNumber());
+        map.put("email", student.getEmail());
+        map.put("name", student.getName() == null ? "" : student.getName());
+        map.put("class", "20计科转本01班");
+        map.put("subject", "软件工程");
+        map.put("symbol", "_");
+
+        String filename  = (String) executeExpression(code, map);
+        System.out.println(filename);
+    }
 
 }
