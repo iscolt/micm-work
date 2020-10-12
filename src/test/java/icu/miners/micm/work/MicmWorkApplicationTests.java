@@ -115,18 +115,18 @@ class MicmWorkApplicationTests {
 //        System.out.println("成功");
 //    }
 
-//    @Test
-//    public void test05() {
-//        EmailTask emailTask = new EmailTask();
-//        emailTask.setFromAddr("1329208516@qq.com");
-//        emailTask.setToAddr("1329208516@qq.com");
-//        emailTask.setTitle("123");
-//        emailTask.setContent("23");
-//        emailTask.setResource("12.zip");
-//
-//        File file = new File("C:\\Users\\isColt\\Documents\\micm-work\\homework1.zip");
-//        EmailUtil.complexMail(emailTask, file, mailSender);
-//    }
+    @Test
+    public void test05() {
+        EmailTask emailTask = new EmailTask();
+        emailTask.setFromAddr("1329208516@qq.com");
+        emailTask.setToAddr("1329208516@qq.com");
+        emailTask.setTitle("123");
+        emailTask.setContent("23");
+        emailTask.setResource("12.zip");
+
+        File file = new File("C:\\Users\\isColt\\Documents\\micm-work\\homework-1.zip");
+        EmailUtil.complexMail(emailTask, file, mailSender);
+    }
 
 //    @Test
 //    public void test06() {
@@ -153,11 +153,13 @@ class MicmWorkApplicationTests {
         Student student = new Student();
         student.setNumber("12");
         student.setEmail("123@qq.com");
-        String code = "number + symbol + email + symbol + subject";
-
+        String name = "学号_邮箱_姓名";
+//        String code = "number + symbol + email + symbol + subject";
+        String code = buildCode(name);
+        System.out.println(code);
         Map<String, Object> map = new HashMap<>();
-        map.put("number", student.getNumber());
-        map.put("email", student.getEmail());
+        map.put("number", student.getNumber() == null ? "" : student.getNumber());
+        map.put("email", student.getEmail() == null ? "" : student.getEmail());
         map.put("name", student.getName() == null ? "" : student.getName());
         map.put("class", "20计科转本01班");
         map.put("subject", "软件工程");
@@ -165,6 +167,36 @@ class MicmWorkApplicationTests {
 
         String filename  = (String) executeExpression(code, map);
         System.out.println(filename);
+    }
+
+    public static String buildCode(String filename) {
+        String[] strs = filename.split("_");
+        String code = "";
+        for (int i = 0; i < strs.length; i++) {
+            if (i != strs.length-1) {
+                // 如果不是最后一个， 后面都要加上 _
+                code += caseKey(strs[i]) + " + symbol + ";
+            } else {
+                code += caseKey(strs[i]);
+            }
+        }
+        return code;
+    }
+
+    public static String caseKey(String key) {
+        switch (key) {
+            case "学号":
+                return "number";
+            case "邮箱":
+                return "email";
+            case "姓名":
+                return "name";
+            case "班级":
+                return "class";
+            case "科目":
+                return "subject";
+        }
+        return null;
     }
 
 }

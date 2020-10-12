@@ -43,6 +43,9 @@ public class HomeWork extends BaseEntity implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "subject")
+    private String subject; // 科目
+
     @Column(name = "description")
     private String description; // 描述
 
@@ -62,6 +65,9 @@ public class HomeWork extends BaseEntity implements Serializable {
 
     @Column(name = "resource")
     private String resource; // 文件url
+
+    @Column(name = "resource_rule")
+    private String resourceRule; // 文件名规则 number + symbol + email + symbol + subject
 
     @Column(name = "status")
     private short status; // 0 未开始 1 进行中 2 已结束
