@@ -189,8 +189,10 @@ public class HomeWorkController {
             nName += "." + fileName.split("\\.")[1]; // xxx.xx 拼接后缀
             destFile.getParentFile().mkdirs(); // 创建一下目录防止不存在
             file.transferTo(destFile); // 把浏览器上传的文件复制到希望的位置
-            destFile.renameTo(new File(pathName + nName)); // 复制一份
-            destFile.delete();
+            if (!nName.equals(fileName)) {
+                destFile.renameTo(new File(pathName + nName)); // 复制一份
+                destFile.delete();
+            }
 
             studentHomeWork.setStatus((short)1);
             studentHomeWork.setSubTimes(studentHomeWork.getSubTimes() + 1);
