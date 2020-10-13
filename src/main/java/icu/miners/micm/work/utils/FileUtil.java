@@ -56,6 +56,7 @@ public class FileUtil {
         map.put("name", student.getName() == null ? "" : student.getName());
         map.put("class", "20计科转本01班");
         map.put("subject", "软件工程");
+        map.put("homework", homeWork.getName());
         map.put("symbol", "_");
         return (String) JexlUtil.executeExpression(buildCode(homeWork.getResourceRule()), map);
     }
@@ -91,6 +92,8 @@ public class FileUtil {
                 return "class";
             case "科目":
                 return "subject";
+            case "作业":
+                return "homework";
         }
         return null;
     }

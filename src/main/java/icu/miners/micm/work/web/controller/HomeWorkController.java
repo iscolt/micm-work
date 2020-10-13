@@ -181,17 +181,16 @@ public class HomeWorkController {
             //4.第一次运行的时候，这个文件所在的目录往往是不存在的，这里需要创建一下目录（创建到了webapp下uploaded文件夹下）
             File destFile = new File(destFileName);
 
-            if (homeWork.getResourceRule() != null) { // 学号_姓名
-                // 根据规则重命名
-                String nName = FileUtil.buildFileName(student, homeWork); // 无后缀
-                if (fileName.split("\\.").length > 2 || fileName.split("\\.").length == 0) {
-                    return new ResponseResult<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "上传失败, 文件只能有一个后缀");
-                }
-                nName += "." + fileName.split("\\.")[1]; // xxx.xx 拼接后缀
-                destFile.renameTo(new File(pathName + nName));
+            // 根据规则重命名
+            String nName = FileUtil.buildFileName(student, homeWork); // 无后缀
+            if (fileName.split("\\.").length > 2 || fileName.split("\\.").length == 0) {
+                return new ResponseResult<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "上传失败, 文件只能有一个后缀");
             }
+            nName += "." + fileName.split("\\.")[1]; // xxx.xx 拼接后缀
             destFile.getParentFile().mkdirs(); // 创建一下目录防止不存在
             file.transferTo(destFile); // 把浏览器上传的文件复制到希望的位置
+            destFile.renameTo(new File(pathName + nName)); // 复制一份
+            destFile.delete();
 
             studentHomeWork.setStatus((short)1);
             studentHomeWork.setSubTimes(studentHomeWork.getSubTimes() + 1);

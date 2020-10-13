@@ -75,6 +75,7 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
             emailTask.setSendDate(sendDate);
             emailTask.setStatus((short)0);
             emailTask.setHomeWork(homeWork);
+            emailTask.setToAddr(homeWork.getSubEmail());
             emailTask.setResource(getHomeWorkFolderPath(homeWork));
             emailTaskService.update(emailTask);
             // 新建一个目录，存放作业文件 homework1

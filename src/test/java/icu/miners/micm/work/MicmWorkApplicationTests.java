@@ -115,19 +115,19 @@ class MicmWorkApplicationTests {
 //        System.out.println("成功");
 //    }
 
-    @Test
-    public void test05() {
-        EmailTask emailTask = new EmailTask();
-        emailTask.setFromAddr("1329208516@qq.com");
-        emailTask.setToAddr("1329208516@qq.com");
-        emailTask.setTitle("123");
-        emailTask.setContent("23");
-        emailTask.setResource("12.zip");
-        System.setProperty("mail.mime.splitlongparameters","false");
-
-        File file = new File("C:\\Users\\isColt\\Documents\\micm-work\\homework10\\Java程序设计_20计科转本01班_第一次作业.zip");
-        EmailUtil.complexMail(emailTask, file, mailSender);
-    }
+//    @Test
+//    public void test05() {
+//        EmailTask emailTask = new EmailTask();
+//        emailTask.setFromAddr("1329208516@qq.com");
+//        emailTask.setToAddr("1329208516@qq.com");
+//        emailTask.setTitle("123");
+//        emailTask.setContent("23");
+//        emailTask.setResource("12.zip");
+//        System.setProperty("mail.mime.splitlongparameters","false");
+//
+//        File file = new File("C:\\Users\\isColt\\Documents\\micm-work\\homework10\\Java程序设计_20计科转本01班_第一次作业.zip");
+//        EmailUtil.complexMail(emailTask, file, mailSender);
+//    }
 
 //    @Test
 //    public void test06() {

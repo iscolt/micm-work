@@ -31,6 +31,8 @@ public class HomeWorkDTOFactory {
 
         private String name;
 
+        private String subject;
+
         private String description; // 描述
 
         @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
@@ -72,6 +74,7 @@ public class HomeWorkDTOFactory {
         homeWorkDTO.setSubStatus(studentHomeWork.getStatus());
         homeWorkDTO.setSubTimes(studentHomeWork.getSubTimes());
         homeWorkDTO.setSubDate(studentHomeWork.getSubDate());
+        homeWorkDTO.setSubject(studentHomeWork.getHomeWork().getSubject());
         return homeWorkDTO;
     }
 }
