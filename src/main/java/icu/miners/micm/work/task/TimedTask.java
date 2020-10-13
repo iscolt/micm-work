@@ -43,24 +43,26 @@ public class TimedTask {
     @Resource
     private HomeWorkService homeWorkService;
 
+    private Boolean sendLock = false; // false 没有任务
+
     @Scheduled(cron = "0/1 * * * * *") //每1秒启动一次
     public void checkEmailTask() {
+        if (sendLock) { return; }
         // 查询未发送的邮箱任务
         List<EmailTask> emailTasks = emailTaskRepository.findAllByStatusAndDeletedAndSendDateLessThan((short) 0, false, new Date());
-        if(emailTasks.size() == 0) {
-            return;
-        }
+        if(emailTasks.size() == 0) { return; }
         // 批量发送
+        sendLock = true;
         emailTasks.forEach(emailTask -> {
             boolean isSuccess = false;
             try {
-                String pathname = emailTask.getResource() + File.separator + emailTask.getTitle() + ".zip";
+                String pathname = emailTask.getResource() + emailTask.getTitle() + ".zip";
                 if (emailTask.getCategory() == 0) { // 0 打包提交到老师邮箱, 1 作业提交提醒
                     FileOutputStream fos1 = null;
 
                         fos1 = new FileOutputStream(new File(pathname));
 
-                    ZipUtil.toZip(emailTask.getResource(), fos1,true);
+                    ZipUtil.toZip(emailTask.getResource() + "resources", fos1,false);
                     File file = new File(pathname);
                     isSuccess = EmailUtil.complexMail(emailTask, file, mailSender);
                 }
@@ -73,11 +75,13 @@ public class TimedTask {
                     emailTask.setStatus((short)2);
                 }
             } catch (Exception e) {
+                sendLock = false;
                 emailTask.setStatus((short)2);
                 log.error(this.getClass().getName() + ": " + e.getMessage());
             }
         });
         emailTaskRepository.saveAll(emailTasks);
+        sendLock = false;
     }
 
     @Scheduled(cron = "0/1 * * * * *") //每1秒启动一次

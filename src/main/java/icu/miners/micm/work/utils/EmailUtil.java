@@ -50,6 +50,7 @@ public class EmailUtil {
     public static boolean complexMail(EmailTask emailTask, File file, JavaMailSenderImpl mailSender) {
         try {
             //创建一个复杂的消息邮件
+            System.setProperty("mail.mime.splitlongparameters","false");
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             //邮件设置

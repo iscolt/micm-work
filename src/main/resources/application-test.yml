@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8083
   tomcat:
     uri-encoding: utf-8
 
@@ -20,11 +20,8 @@ spring:
             starttls:
                enable: true
                required: true
-            mine:
-              splitlongparameters: false
-
   datasource:
-    url: jdbc:mysql://localhost:3306/micm_work?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/micm_work_test?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
     password: 5211
     driver-class-name: com.mysql.cj.jdbc.Driver

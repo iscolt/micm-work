@@ -36,7 +36,7 @@ public interface HomeWorkService extends CrudService<HomeWork, Integer> {
     Boolean checkIsNotExpired(HomeWork homeWork);
 
     /**
-     * 获取作业文件夹
+     * 获取作业文件夹 /userhome/micm-work/homework12/resources/
      * @param homeWork
      * @return
      */

@@ -113,9 +113,15 @@ public class StudentController {
         Student student = null;
         for (int i = 0; i < list.size(); i++) {
             List<Object> lo = list.get(i);
-            if (studentService.getByNumber(String.valueOf(lo.get(0))) != null) continue;
+            Student byNumber = studentService.getByNumber(String.valueOf(lo.get(0)));
+            if (byNumber != null) {
+                byNumber.setName(String.valueOf(lo.get(1))); // 更新姓名
+                students.add(byNumber);
+                continue;
+            }
             student = new Student();
             student.setNumber(String.valueOf(lo.get(0)));
+            student.setName(String.valueOf(lo.get(1)));
             student.setInit((short)0);
             student.setRole((short)0);
             students.add(student);

@@ -1,6 +1,11 @@
 package icu.miners.micm.work.utils;
 
+import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Student;
+
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * xx
@@ -17,13 +22,10 @@ public class FileUtil {
 
     /**
      * 用户目录下创建文件夹
-     * @param name
+     * @param path
      * @return
      */
-    public static Boolean createFolderOnUserHome(String name) {
-        String path = System.getProperty("user.home") + File.separator + "Documents";
-        System.out.println(path); // C:\Users\isColt\Documents
-        path += File.separator + name; // separator分割
+    public static Boolean createFolderOnUserHome(String path) {
         File customDir = new File(path);
 
         if (customDir.exists()) {
@@ -34,12 +36,62 @@ public class FileUtil {
     }
 
     /**
-     * 获取用户目录
+     * 获取用户目录 /usr/Documents/
      * @return
      */
     public static String getUserHomeFolderPath() {
         String path = System.getProperty("user.home") + File.separator + "Documents";
         path += File.separator; // separator分割
         return path;
+    }
+
+    /**
+     * 根据规则生成文件名
+     * @return
+     */
+    public static String buildFileName(Student student, HomeWork homeWork) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("number", student.getNumber() == null ? "" : student.getNumber());
+        map.put("email", student.getEmail() == null ? "" : student.getEmail());
+        map.put("name", student.getName() == null ? "" : student.getName());
+        map.put("class", "20计科转本01班");
+        map.put("subject", "软件工程");
+        map.put("symbol", "_");
+        return (String) JexlUtil.executeExpression(buildCode(homeWork.getResourceRule()), map);
+    }
+
+    /**
+     * 生成文件的拼接代码
+     * @param filename 学号_姓名
+     * @return number + symbol + name
+     */
+    public static String buildCode(String filename) {
+        String[] strs = filename.split("_");
+        String code = "";
+        for (int i = 0; i < strs.length; i++) {
+            if (i != strs.length-1) {
+                // 如果不是最后一个， 后面都要加上 _
+                code += caseKey(strs[i]) + " + symbol + ";
+            } else {
+                code += caseKey(strs[i]);
+            }
+        }
+        return code;
+    }
+
+    public static String caseKey(String key) {
+        switch (key) {
+            case "学号":
+                return "number";
+            case "邮箱":
+                return "email";
+            case "姓名":
+                return "name";
+            case "班级":
+                return "class";
+            case "科目":
+                return "subject";
+        }
+        return null;
     }
 }

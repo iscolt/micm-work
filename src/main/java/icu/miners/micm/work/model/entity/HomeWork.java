@@ -66,8 +66,11 @@ public class HomeWork extends BaseEntity implements Serializable {
     @Column(name = "resource")
     private String resource; // 文件url
 
+    /**
+     * TODO 可以改成Json {rule: 学号_邮箱, splitKey: _}
+     */
     @Column(name = "resource_rule")
-    private String resourceRule; // 文件名规则 number + symbol + email + symbol + subject
+    private String resourceRule; // 文件名规则 学号_邮箱 == number + symbol + email + symbol + subject
 
     @Column(name = "status")
     private short status; // 0 未开始 1 进行中 2 已结束

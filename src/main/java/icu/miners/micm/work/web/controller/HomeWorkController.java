@@ -176,16 +176,20 @@ public class HomeWorkController {
         // 将附件存到文件夹中 homework + homework.getId()
         try {
             String fileName = file.getOriginalFilename();  // 获取原始文件名
-            // TODO 检查文件名是否规范 25马文艺，只检测前两位
-            if (fileName == null || !student.getNumber().equals(fileName.substring(0, 2))) {
-                return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "文件名不规范。参照：25马文艺");
-            }
-            if (studentHomeWork.getResource() != null && !studentHomeWork.getResource().equals(fileName)) {
-                return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "两次文件名不同，请重新上传");
-            }
-            String destFileName = FileUtil.getUserHomeFolderPath() + homeWorkService.getHomeWorkFolderPath(homeWork) + File.separator + fileName; // 获取用户目录，拼接到作业目录
+            String pathName = homeWorkService.getHomeWorkFolderPath(homeWork) + File.separator + "resources" + File.separator;
+            String destFileName = pathName + fileName; // 获取作业目录，放到作业目录resources下
             //4.第一次运行的时候，这个文件所在的目录往往是不存在的，这里需要创建一下目录（创建到了webapp下uploaded文件夹下）
             File destFile = new File(destFileName);
+
+            if (homeWork.getResourceRule() != null) { // 学号_姓名
+                // 根据规则重命名
+                String nName = FileUtil.buildFileName(student, homeWork); // 无后缀
+                if (fileName.split("\\.").length > 2 || fileName.split("\\.").length == 0) {
+                    return new ResponseResult<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "上传失败, 文件只能有一个后缀");
+                }
+                nName += "." + fileName.split("\\.")[1]; // xxx.xx 拼接后缀
+                destFile.renameTo(new File(pathName + nName));
+            }
             destFile.getParentFile().mkdirs(); // 创建一下目录防止不存在
             file.transferTo(destFile); // 把浏览器上传的文件复制到希望的位置
 
@@ -200,6 +204,10 @@ public class HomeWorkController {
             log.error(e.getMessage());
             e.printStackTrace();
             return new ResponseResult<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "上传失败, " + e.getMessage());
+        } catch (ArrayIndexOutOfBoundsException e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+            return new ResponseResult<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "上传失败, 文件名解析错误");
         }
     }
 

@@ -67,7 +67,7 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
                 emailTask = new EmailTask();
                 emailTask.setFromAddr("1329208516@qq.com");
                 emailTask.setToAddr(homeWork.getSubEmail());
-                emailTask.setTitle("20转本计科01班-" + homeWork.getName());
+                emailTask.setTitle(homeWork.getSubject() + "_20计科转本01班_" + homeWork.getName());
                 emailTask.setCategory((short)0);
             }
             // TODO 作业结束5分钟 发送
@@ -75,7 +75,7 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
             emailTask.setSendDate(sendDate);
             emailTask.setStatus((short)0);
             emailTask.setHomeWork(homeWork);
-            emailTask.setResource(FileUtil.getUserHomeFolderPath() + getHomeWorkFolderPath(homeWork));
+            emailTask.setResource(getHomeWorkFolderPath(homeWork));
             emailTaskService.update(emailTask);
             // 新建一个目录，存放作业文件 homework1
             FileUtil.createFolderOnUserHome(getHomeWorkFolderPath(update));
@@ -101,7 +101,9 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
 
     @Override
     public String getHomeWorkFolderPath(HomeWork homeWork) {
-        return "micm-work" + File.separator + "homework" + homeWork.getId();
+        return FileUtil.getUserHomeFolderPath()
+                + "micm-work" + File.separator
+                + "homework" + homeWork.getId() + File.separator; // + "resources" + File.separator
     }
 
     @Override
