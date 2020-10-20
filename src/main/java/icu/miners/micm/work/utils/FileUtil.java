@@ -54,8 +54,8 @@ public class FileUtil {
         map.put("number", student.getNumber() == null ? "" : student.getNumber());
         map.put("email", student.getEmail() == null ? "" : student.getEmail());
         map.put("name", student.getName() == null ? "" : student.getName());
-        map.put("class", "20计科转本01班");
-        map.put("subject", "软件工程");
+        map.put("class", student.getClassName() == null ? "20计科转本01班" : student.getClassName());
+        map.put("subject", homeWork.getSubject() == null ? "其他" : homeWork.getSubject());
         map.put("homework", homeWork.getName());
         map.put("symbol", "_");
         return (String) JexlUtil.executeExpression(buildCode(homeWork.getResourceRule()), map);

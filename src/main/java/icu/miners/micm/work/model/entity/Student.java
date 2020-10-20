@@ -45,6 +45,9 @@ public class Student extends BaseEntity implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "class_name")
+    private String className; // 班级信息
+
     @JsonIgnore
     @Column(name = "password")
     private String password;

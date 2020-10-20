@@ -173,6 +173,21 @@ public class StudentController {
         return new ResponseResult<>(HttpStatus.OK.value(), "操作成功");
     }
 
+    @ApiOperation(value = "重置学生账号")
+    @UserLoginToken
+    @CheckRole
+    @GetMapping("/reset/{stuId}")
+    public ResponseResult<List<Student>> reset(@PathVariable(value = "stuId") Integer stuId) {
+        Student student = studentService.fetchById(stuId).orElse(null);
+        if (student == null) {
+            return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "无此用户");
+        }
+        student.setInit((short)0); // 设为未初始状态
+        student.setPassword(null); // 清空密码
+        studentService.update(student);
+        return new ResponseResult<>(HttpStatus.OK.value(), "操作成功");
+    }
+
     @ApiOperation(value = "判断角色")
     @UserLoginToken
     @GetMapping("/check/role")

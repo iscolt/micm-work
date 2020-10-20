@@ -135,12 +135,18 @@ public class HomeWorkController {
     @UserLoginToken
     @CheckRole
     @GetMapping("student/{homeworkId}")
-    public ResponseResult<List<StudentHomeWork>> students(@PathVariable(value = "homeworkId") Integer homeworkId) {
+    public ResponseResult<List<StudentHomeWork>> students(@PathVariable(value = "homeworkId") Integer homeworkId,
+                                                          Short status) {
         HomeWork homeWork = homeWorkService.fetchById(homeworkId).orElse(null);
         if (homeWork == null) {
             return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "无此数据");
         }
-        List<StudentHomeWork> studentHomeWorks = studentHomeWorkService.listByHomeWork(homeWork);
+        List<StudentHomeWork> studentHomeWorks = new ArrayList<>();
+        if (status == null || status == -1) {
+            studentHomeWorks = studentHomeWorkService.listByHomeWork(homeWork);
+        } else {
+            studentHomeWorks = studentHomeWorkService.listByHomeWork(homeWork, status);
+        }
         return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", studentHomeWorks);
     }
 
