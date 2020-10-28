@@ -48,6 +48,30 @@ class MicmWorkApplicationTests {
     StudentService studentService;
 
 //    @Test
+//    public void initTestAccount() {
+//        Student guest = new Student();
+//        guest.setNumber("guest");
+//        guest.setName("Guest");
+//        guest.setClassName("20计科01班");
+//        guest.setPassword(DigestUtils.md5DigestAsHex("guest".getBytes()));
+//        guest.setEmail("iscolt@qq.com");
+//        guest.setRole((short)0);
+//        guest.setInit((short)1);
+//
+//        Student admin = new Student();
+//        admin.setNumber("admin");
+//        admin.setName("Admin");
+//        admin.setClassName("20计科01班");
+//        admin.setPassword(DigestUtils.md5DigestAsHex("admin".getBytes()));
+//        admin.setEmail("1329208516@qq.com");
+//        admin.setRole((short)1);
+//        admin.setInit((short)1);
+//
+//        studentService.update(guest);
+//        studentService.update(admin);
+//    }
+
+//    @Test
 //    public void contextLoads() {
 //        SimpleMailMessage message = new SimpleMailMessage();//简单邮件
 //        //邮件设置
