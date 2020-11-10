@@ -92,7 +92,7 @@ public class HomeWorkController {
     public ResponseResult<List<HomeWork>> listByStatus(@PathVariable(value = "status") short status) {
         Organization organization = organizationService.getCurrentOrganization();
         if (organization != null) {
-            if (status != -1) {
+            if (status == -1) {
                 return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", homeWorkService.listAllByOrganization(organization));
             }
             return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", homeWorkService.listByStatusAndOrganization(status, organization));

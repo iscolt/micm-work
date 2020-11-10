@@ -7,6 +7,7 @@ import icu.miners.micm.work.model.dto.UserInfo;
 import icu.miners.micm.work.model.entity.Organization;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.model.param.LoginParam;
+import icu.miners.micm.work.model.param.RegParam;
 import icu.miners.micm.work.service.HomeWorkService;
 import icu.miners.micm.work.service.OrganizationService;
 import icu.miners.micm.work.service.StudentService;
@@ -96,6 +97,42 @@ public class StudentController {
         }
         token = studentService.getToken(student);
         return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", new UserInfo(token, student.getRole()));
+    }
+
+    /**
+     * 用户注册
+     * @param regParam
+     * @return
+     */
+    @PostMapping("reg")
+    @ApiOperation(value = "用户注册")
+    public ResponseResult<UserInfo> reg(@RequestBody RegParam regParam) {
+        final Integer DEFAULT_CLASS_ID = 2;
+        Student student = studentService.getByNumber(regParam.getNumber());
+        if (student != null) {
+            return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "用户已存在");
+        }
+        if (regParam.getClassName() == null || regParam.getNumber() == null || regParam.getName() == null) {
+            return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "信息不全");
+        }
+        Organization organization = new Organization();
+        organization.setName(regParam.getClassName());
+        organization.setParent(organizationService.fetchById(DEFAULT_CLASS_ID).orElse(null));
+        organization.setStatus((short)0);
+        organizationService.update(organization);
+
+        Student newStudent = new Student();
+        newStudent.setNumber(regParam.getNumber());
+        newStudent.setName(regParam.getName());
+        newStudent.setOrganization(organization);
+        newStudent.setPassword(DigestUtils.md5DigestAsHex(regParam.getPassword().getBytes()));
+        newStudent.setEmail(regParam.getEmail());
+        newStudent.setRole((short)1); // 管理员
+        newStudent.setInit((short)1);
+        newStudent.setDeleted(true); // 冻结
+        studentService.update(newStudent);
+
+        return new ResponseResult<>(HttpStatus.OK.value(), "注册成功，联系管理员审核");
     }
 
     @ApiOperation(value = "导入学生")
