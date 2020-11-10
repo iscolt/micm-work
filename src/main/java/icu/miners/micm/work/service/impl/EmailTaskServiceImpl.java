@@ -2,6 +2,7 @@ package icu.miners.micm.work.service.impl;
 
 import icu.miners.micm.work.model.entity.EmailTask;
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Organization;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.repository.EmailTaskRepository;
 import icu.miners.micm.work.service.EmailTaskService;
@@ -37,6 +38,16 @@ public class EmailTaskServiceImpl extends AbstractCrudService<EmailTask, Integer
     @Override
     public List<EmailTask> listByStatus(short status) {
         return emailTaskRepository.findAllByStatus(status);
+    }
+
+    @Override
+    public List<EmailTask> listByStatusAndOrganization(short status, Organization organization) {
+        return emailTaskRepository.findAllByStatusAndOrganization(status, organization);
+    }
+
+    @Override
+    public List<EmailTask> listAllByOrganization(Organization organization) {
+        return emailTaskRepository.findAllByOrganization(organization);
     }
 
     @Override

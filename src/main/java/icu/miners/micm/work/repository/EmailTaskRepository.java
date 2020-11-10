@@ -2,6 +2,7 @@ package icu.miners.micm.work.repository;
 
 import icu.miners.micm.work.model.entity.EmailTask;
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Organization;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,6 +24,10 @@ import java.util.List;
 public interface EmailTaskRepository extends JpaRepository<EmailTask, Integer> {
 
     List<EmailTask> findAllByStatus(Short status);
+
+    List<EmailTask> findAllByStatusAndOrganization(Short status, Organization organization);
+
+    List<EmailTask> findAllByOrganization(Organization organization);
 
     EmailTask findByHomeWorkAndToAddr(HomeWork homeWork, String toAddr);
 

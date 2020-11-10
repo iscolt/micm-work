@@ -63,6 +63,10 @@ public class EmailTask extends BaseEntity implements Serializable {
     @Column(name = "send_date")
     private Date sendDate;
 
+    @JoinColumn(name = "organization")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Organization organization; // 组织：班级、学院、学校
+
     @Column(name = "status")
     private Short status; // 0 未发送 1 已发送 2 发送失败
 

@@ -5,8 +5,10 @@ import icu.miners.micm.work.annotation.UserLoginToken;
 import icu.miners.micm.work.model.base.ResponseResult;
 import icu.miners.micm.work.model.entity.EmailTask;
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Organization;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.service.EmailTaskService;
+import icu.miners.micm.work.service.OrganizationService;
 import icu.miners.micm.work.service.StudentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,10 +54,20 @@ public class EmailTaskController {
     @Resource
     private EmailTaskService emailTaskService;
 
+    @Resource
+    private OrganizationService organizationService;
+
     @ApiOperation(value = "查看邮件任务列表")
     @UserLoginToken
     @GetMapping(value = "{status}")
     public ResponseResult<List<EmailTask>> list(@PathVariable(value = "status") short status) {
+        Organization organization = organizationService.getCurrentOrganization();
+        if (organization != null) {
+            if (status != -1) {
+                return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", emailTaskService.listByStatusAndOrganization(status, organization));
+            }
+            return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", emailTaskService.listAllByOrganization(organization));
+        }
         if (status != -1) {
             return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", emailTaskService.listByStatus(status));
         }

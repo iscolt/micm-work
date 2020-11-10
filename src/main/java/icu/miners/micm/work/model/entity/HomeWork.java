@@ -9,9 +9,12 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
@@ -71,6 +74,10 @@ public class HomeWork extends BaseEntity implements Serializable {
      */
     @Column(name = "resource_rule")
     private String resourceRule; // 文件名规则 学号_邮箱 == number + symbol + email + symbol + subject
+
+    @JoinColumn(name = "organization")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Organization organization; // 组织：班级、学院、学校
 
     @Column(name = "status")
     private short status; // 0 未开始 1 进行中 2 已结束

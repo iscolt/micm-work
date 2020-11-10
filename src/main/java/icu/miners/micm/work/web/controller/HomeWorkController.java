@@ -12,11 +12,13 @@ import icu.miners.micm.work.model.base.ResponseResult;
 import icu.miners.micm.work.model.dto.HomeWorkDTOFactory;
 import icu.miners.micm.work.model.entity.EmailTask;
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Organization;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.model.entity.StudentHomeWork;
 import icu.miners.micm.work.model.param.LoginParam;
 import icu.miners.micm.work.service.EmailTaskService;
 import icu.miners.micm.work.service.HomeWorkService;
+import icu.miners.micm.work.service.OrganizationService;
 import icu.miners.micm.work.service.StudentHomeWorkService;
 import icu.miners.micm.work.service.StudentService;
 import icu.miners.micm.work.utils.FileUtil;
@@ -82,9 +84,19 @@ public class HomeWorkController {
     @Resource
     private HomeWorkDTOFactory homeWorkDTOFactory;
 
+    @Resource
+    private OrganizationService organizationService;
+
     @ApiOperation(value = "查看作业列表 0 未开始 1 进行中 2 已结束")
     @GetMapping(value = "{status}")
     public ResponseResult<List<HomeWork>> listByStatus(@PathVariable(value = "status") short status) {
+        Organization organization = organizationService.getCurrentOrganization();
+        if (organization != null) {
+            if (status != -1) {
+                return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", homeWorkService.listAllByOrganization(organization));
+            }
+            return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", homeWorkService.listByStatusAndOrganization(status, organization));
+        }
         if (status == -1) {
             return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", homeWorkService.listAll());
         }
@@ -111,9 +123,19 @@ public class HomeWorkController {
     @CheckRole
     @PostMapping("")
     public ResponseResult<HomeWork> add(@RequestBody HomeWork homeWork) {
-        HomeWork update = homeWorkService.releaseHomework(homeWork);
-        // 发布作业，同时分配给每位学生
-        List<Student> students = studentService.listValid();
+        Organization organization = organizationService.getCurrentOrganization();
+        HomeWork update;
+        List<Student> students;
+        if (organization != null) {
+            update = homeWorkService.releaseHomework(homeWork, organization);
+            // 发布作业，同时分配给每位学生
+            students = studentService.listAllByOrganization(organization);
+        } else {
+            update = homeWorkService.releaseHomework(homeWork);
+            // 发布作业，同时分配给每位学生
+            students = studentService.listValid();
+        }
+
         List<StudentHomeWork> studentHomeWorks = new ArrayList<>();
         students.forEach(student -> {
             if (student.getId() == 1) return; // TODO 初始账号不分配作业

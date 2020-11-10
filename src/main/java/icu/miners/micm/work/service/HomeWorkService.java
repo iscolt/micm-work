@@ -1,6 +1,7 @@
 package icu.miners.micm.work.service;
 
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Organization;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.model.entity.StudentHomeWork;
 import icu.miners.micm.work.service.base.CrudService;
@@ -22,12 +23,19 @@ public interface HomeWorkService extends CrudService<HomeWork, Integer> {
 
     List<HomeWork> listByStatus(short status);
 
+    List<HomeWork> listByStatusAndOrganization(short status, Organization organization);
+
+    List<HomeWork> listAllByOrganization(Organization organization);
+
     /**
      * 发布作业
      * @param homeWork
      * @return
      */
     HomeWork releaseHomework(HomeWork homeWork);
+
+
+    HomeWork releaseHomework(HomeWork homeWork, Organization organization);
 
     /**
      * 检查作业是否过期

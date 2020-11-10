@@ -4,9 +4,11 @@ import icu.miners.micm.work.annotation.CheckRole;
 import icu.miners.micm.work.annotation.UserLoginToken;
 import icu.miners.micm.work.model.base.ResponseResult;
 import icu.miners.micm.work.model.dto.UserInfo;
+import icu.miners.micm.work.model.entity.Organization;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.model.param.LoginParam;
 import icu.miners.micm.work.service.HomeWorkService;
+import icu.miners.micm.work.service.OrganizationService;
 import icu.miners.micm.work.service.StudentService;
 import icu.miners.micm.work.utils.ExcelUtil;
 import io.swagger.annotations.Api;
@@ -63,6 +65,9 @@ public class StudentController {
     @Resource
     private HomeWorkService homeWorkService;
 
+    @Resource
+    private OrganizationService organizationService;
+
     /**
      * 用户登陆接口
      * @param loginParam
@@ -99,6 +104,10 @@ public class StudentController {
     @PostMapping("import/excel")
     @ResponseBody
     public ResponseResult<Void> importByExcel(HttpServletRequest request) throws Exception {
+        Organization organization = organizationService.getCurrentOrganization();
+        if (organization == null) {
+            return new ResponseResult<>(HttpStatus.FAILED_DEPENDENCY.value(), "未绑定组织");
+        }
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
         MultipartFile file = multipartRequest.getFile("file");
@@ -115,13 +124,12 @@ public class StudentController {
             List<Object> lo = list.get(i);
             Student byNumber = studentService.getByNumber(String.valueOf(lo.get(0)));
             if (byNumber != null) {
-                byNumber.setName(String.valueOf(lo.get(1))); // 更新姓名
-                students.add(byNumber);
                 continue;
             }
             student = new Student();
             student.setNumber(String.valueOf(lo.get(0)));
             student.setName(String.valueOf(lo.get(1)));
+            student.setOrganization(organization);
             student.setInit((short)0);
             student.setRole((short)0);
             students.add(student);
@@ -134,6 +142,10 @@ public class StudentController {
     @UserLoginToken
     @GetMapping("")
     public ResponseResult<List<Student>> list() {
+        Organization organization = organizationService.getCurrentOrganization();
+        if (organization != null) {
+            return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", studentService.listAllByOrganization(organization));
+        }
         return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", studentService.listAll());
     }
 

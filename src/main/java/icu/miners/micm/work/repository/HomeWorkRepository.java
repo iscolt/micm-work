@@ -1,6 +1,7 @@
 package icu.miners.micm.work.repository;
 
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Organization;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +23,10 @@ import java.util.List;
 public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
 
     List<HomeWork> findAllByStatus(short status);
+
+    List<HomeWork> findAllByOrganization(Organization organizatio);
+
+    List<HomeWork> findAllByStatusAndOrganization(short status, Organization organization);
 
     List<HomeWork> findByIdNotIn(List<Integer> ids);
 }

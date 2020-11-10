@@ -2,6 +2,7 @@ package icu.miners.micm.work.service;
 
 import icu.miners.micm.work.model.entity.EmailTask;
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Organization;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.service.base.CrudService;
 
@@ -21,6 +22,10 @@ import java.util.List;
 public interface EmailTaskService extends CrudService<EmailTask, Integer> {
 
     List<EmailTask> listByStatus(short status);
+
+    List<EmailTask> listByStatusAndOrganization(short status, Organization organization);
+
+    List<EmailTask> listAllByOrganization(Organization organization);
 
     /**
      * 作业提醒订阅

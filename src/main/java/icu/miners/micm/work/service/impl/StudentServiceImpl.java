@@ -2,6 +2,7 @@ package icu.miners.micm.work.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import icu.miners.micm.work.model.entity.Organization;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.repository.StudentRepository;
 import icu.miners.micm.work.service.StudentService;
@@ -73,6 +74,11 @@ public class StudentServiceImpl extends AbstractCrudService<Student, Integer> im
     @Override
     public List<Student> listValid() {
         return studentRepository.findByDeletedIs(false);
+    }
+
+    @Override
+    public List<Student> listAllByOrganization(Organization organization) {
+        return studentRepository.findAllByOrganization(organization);
     }
 
     @Override

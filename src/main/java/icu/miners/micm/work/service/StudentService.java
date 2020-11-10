@@ -1,5 +1,6 @@
 package icu.miners.micm.work.service;
 
+import icu.miners.micm.work.model.entity.Organization;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.service.base.CrudService;
 
@@ -27,6 +28,8 @@ public interface StudentService extends CrudService<Student, Integer> {
     Student getCurrentUser();
 
     List<Student> listValid();
+
+    List<Student> listAllByOrganization(Organization organization);
 
     Student getByEmail(String email);
 }

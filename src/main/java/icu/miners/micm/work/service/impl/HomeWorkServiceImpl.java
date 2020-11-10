@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 import icu.miners.micm.work.model.entity.EmailTask;
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Organization;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.model.entity.StudentHomeWork;
 import icu.miners.micm.work.repository.EmailTaskRepository;
@@ -57,6 +58,16 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
     }
 
     @Override
+    public List<HomeWork> listByStatusAndOrganization(short status, Organization organization) {
+        return homeWorkRepository.findAllByStatusAndOrganization(status, organization);
+    }
+
+    @Override
+    public List<HomeWork> listAllByOrganization(Organization organization) {
+        return homeWorkRepository.findAllByOrganization(organization);
+    }
+
+    @Override
     public HomeWork releaseHomework(HomeWork homeWork) {
         HomeWork update = update(homeWork);
         // 提交方式 0 打包邮箱发送 1 其他
@@ -77,6 +88,36 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
             emailTask.setHomeWork(homeWork);
             emailTask.setToAddr(homeWork.getSubEmail());
             emailTask.setResource(getHomeWorkFolderPath(homeWork));
+            emailTaskService.update(emailTask);
+            // 新建一个目录，存放作业文件 homework1
+            FileUtil.createFolderOnUserHome(getHomeWorkFolderPath(update));
+        }
+        return update;
+    }
+
+    @Override
+    public HomeWork releaseHomework(HomeWork homeWork, Organization organization) {
+        homeWork.setOrganization(organization);
+        HomeWork update = update(homeWork);
+        // 提交方式 0 打包邮箱发送 1 其他
+        if (update.getSubMethod() == 0) {
+            // 新建一个邮箱任务 TODO 更新所有相关邮箱任务发送的时间
+            EmailTask emailTask = emailTaskRepository.findByHomeWorkAndCategory(update, (short) 0);
+            if (emailTask == null) {
+                emailTask = new EmailTask();
+                emailTask.setFromAddr("1329208516@qq.com");
+                emailTask.setToAddr(homeWork.getSubEmail());
+                emailTask.setTitle(homeWork.getSubject() + "_" + organization.getName() +"_" + homeWork.getName());
+                emailTask.setCategory((short)0);
+            }
+            // TODO 作业结束5分钟 发送
+            Date sendDate = new Date(homeWork.getEnd().getTime() + 300000);
+            emailTask.setSendDate(sendDate);
+            emailTask.setStatus((short)0);
+            emailTask.setHomeWork(homeWork);
+            emailTask.setToAddr(homeWork.getSubEmail());
+            emailTask.setResource(getHomeWorkFolderPath(homeWork));
+            emailTask.setOrganization(organization);
             emailTaskService.update(emailTask);
             // 新建一个目录，存放作业文件 homework1
             FileUtil.createFolderOnUserHome(getHomeWorkFolderPath(update));

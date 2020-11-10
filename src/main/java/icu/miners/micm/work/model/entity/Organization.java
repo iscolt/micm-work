@@ -1,6 +1,5 @@
 package icu.miners.micm.work.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import icu.miners.micm.work.model.base.BaseEntity;
 import lombok.Data;
@@ -25,46 +24,30 @@ import java.io.Serializable;
  * </p>
  *
  * @author: https://github.com/isColt
- * @date: 2020/9/8
+ * @date: 2020/11/10
  * @see: icu.miners.micm.work.model.entity
  * @version: v1.0.0
  */
 @Data
 @Entity
-@Table(name = "student")
+@Table(name = "organization")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(value={"hibernateLazyInitializer"})
-public class Student extends BaseEntity implements Serializable {
+public class Organization extends BaseEntity implements Serializable {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "number")
-    private String number; // 唯一的
-
     @Column(name = "name")
     private String name;
 
-    @Column(name = "class_name")
-    private String className; // 班级信息
-
-    @JoinColumn(name = "organization")
+    @JoinColumn(name = "parent")
     @ManyToOne(fetch = FetchType.EAGER)
-    private Organization organization; // 组织：班级、学院、学校
+    private Organization parent;
 
-    @JsonIgnore
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "role")
-    private Short role; // 0 学生 1 学委
-
-    @Column(name = "init")
-    private Short init; // 0 未初始化 1 已经初始化
+    @Column(name = "status")
+    private Short status; // 0 冻结(审核) 1 可用
 }
