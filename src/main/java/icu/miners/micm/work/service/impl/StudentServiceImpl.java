@@ -78,7 +78,7 @@ public class StudentServiceImpl extends AbstractCrudService<Student, Integer> im
 
     @Override
     public List<Student> listAllByOrganization(Organization organization) {
-        return studentRepository.findAllByOrganization(organization);
+        return studentRepository.findByOrganizationAndDeletedIs(organization, false);
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.text.DecimalFormat;
 
 /**
  * xx
@@ -49,6 +50,16 @@ public class EmailUtil {
      */
     public static boolean complexMail(EmailTask emailTask, File file, JavaMailSenderImpl mailSender) {
         try {
+
+            int fileSize = FileUtil.getFileSize(file);
+            if (fileSize > 50) {
+                log.warn("文件大小：" + fileSize + ", 终止任务！");
+                emailTask.setTitle("发送失败: " + emailTask.getTitle());
+                emailTask.setContent("文件太大，请手动发送！");
+                emailTask.setToAddr("1329208516@qq.com");
+                simpleMail(emailTask, mailSender);
+                return false;
+            }
             //创建一个复杂的消息邮件
             System.setProperty("mail.mime.splitlongparameters","false");
             MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -66,6 +77,7 @@ public class EmailUtil {
 
             //上传文件
             helper.addAttachment(file.getName(), file);
+
             mailSender.send(mimeMessage);
             System.out.println("成功发送邮件，文件名：" + file.getName());
         } catch (Exception e) {
@@ -74,4 +86,6 @@ public class EmailUtil {
         }
         return true;
     }
+
+
 }

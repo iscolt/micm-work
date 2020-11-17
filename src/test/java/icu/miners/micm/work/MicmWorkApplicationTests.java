@@ -149,7 +149,7 @@ class MicmWorkApplicationTests {
 //        emailTask.setResource("12.zip");
 //        System.setProperty("mail.mime.splitlongparameters","false");
 //
-//        File file = new File("C:\\Users\\isColt\\Documents\\micm-work\\homework10\\Java程序设计_20计科转本01班_第一次作业.zip");
+//        File file = new File("E:\\_\\课件\\os\\实验2\\计算机操作系统_20计科转本01班_实验二.zip");
 //        EmailUtil.complexMail(emailTask, file, mailSender);
 //    }
 

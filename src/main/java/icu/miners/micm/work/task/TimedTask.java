@@ -64,6 +64,7 @@ public class TimedTask {
 
                     ZipUtil.toZip(emailTask.getResource() + "resources", fos1,false);
                     File file = new File(pathname);
+
                     isSuccess = EmailUtil.complexMail(emailTask, file, mailSender);
                 }
                 if (emailTask.getCategory() == 1) {

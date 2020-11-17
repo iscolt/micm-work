@@ -4,6 +4,7 @@ import icu.miners.micm.work.model.entity.HomeWork;
 import icu.miners.micm.work.model.entity.Student;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,28 @@ import java.util.Map;
  * @version: v1.0.0
  */
 public class FileUtil {
+
+    public static int getFileSize(File file){
+        int size = 0;
+        if(file.exists() && file.isFile()){
+            long fileS = file.length();
+            DecimalFormat df = new DecimalFormat("#.00");
+//            if (fileS < 1024) {
+//                size = df.format((double) fileS) + "BT";
+//            } else if (fileS < 1048576) {
+//                size = df.format((double) fileS / 1024) + "KB";
+//            } else if (fileS < 1073741824) {
+                size = (int) (fileS / 1048576);
+//            } else {
+//                size = df.format((double) fileS / 1073741824) +"GB";
+//            }
+        }else if(file.exists() && file.isDirectory()){
+            size = 0;
+        }else{
+            size = 0;
+        }
+        return size;
+    }
 
     /**
      * 用户目录下创建文件夹
