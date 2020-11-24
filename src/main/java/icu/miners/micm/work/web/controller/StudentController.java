@@ -91,12 +91,12 @@ public class StudentController {
                 student.setInit((short)1);
                 studentService.update(student);
                 token = studentService.getToken(student);
-                return new ResponseResult<>(HttpStatus.OK.value(), "操作成功, 密码已经初始化!", new UserInfo(token, student.getRole()));
+                return new ResponseResult<>(HttpStatus.OK.value(), "操作成功, 密码已经初始化!", new UserInfo(token, student.getRole(), student.getName()));
             }
             return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "用户名/密码错误");
         }
         token = studentService.getToken(student);
-        return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", new UserInfo(token, student.getRole()));
+        return new ResponseResult<>(HttpStatus.OK.value(), "操作成功", new UserInfo(token, student.getRole(), student.getName()));
     }
 
     /**
