@@ -22,11 +22,11 @@ import java.util.List;
 @Repository
 public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
 
-    List<HomeWork> findAllByStatus(short status);
+    List<HomeWork> findAllByStatusOrderByEnd(short status);
 
-    List<HomeWork> findAllByOrganization(Organization organizatio);
+    List<HomeWork> findAllByOrganizationOrderByEnd(Organization organizatio);
 
-    List<HomeWork> findAllByStatusAndOrganization(short status, Organization organization);
+    List<HomeWork> findAllByStatusAndOrganizationOrderByEnd(short status, Organization organization);
 
     List<HomeWork> findByIdNotIn(List<Integer> ids);
 }

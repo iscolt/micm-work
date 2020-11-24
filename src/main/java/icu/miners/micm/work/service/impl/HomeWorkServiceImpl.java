@@ -54,17 +54,17 @@ public class HomeWorkServiceImpl extends AbstractCrudService<HomeWork, Integer> 
 
     @Override
     public List<HomeWork> listByStatus(short status) {
-        return homeWorkRepository.findAllByStatus(status);
+        return homeWorkRepository.findAllByStatusOrderByEnd(status);
     }
 
     @Override
     public List<HomeWork> listByStatusAndOrganization(short status, Organization organization) {
-        return homeWorkRepository.findAllByStatusAndOrganization(status, organization);
+        return homeWorkRepository.findAllByStatusAndOrganizationOrderByEnd(status, organization);
     }
 
     @Override
     public List<HomeWork> listAllByOrganization(Organization organization) {
-        return homeWorkRepository.findAllByOrganization(organization);
+        return homeWorkRepository.findAllByOrganizationOrderByEnd(organization);
     }
 
     @Override
