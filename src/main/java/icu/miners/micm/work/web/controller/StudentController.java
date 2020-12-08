@@ -129,7 +129,7 @@ public class StudentController {
         newStudent.setEmail(regParam.getEmail());
         newStudent.setRole((short)1); // 管理员
         newStudent.setInit((short)1);
-        newStudent.setDeleted(true); // 冻结
+        newStudent.setDeleted(false); // 冻结 false 1 true 0
         studentService.update(newStudent);
 
         return new ResponseResult<>(HttpStatus.OK.value(), "注册成功，联系管理员审核");

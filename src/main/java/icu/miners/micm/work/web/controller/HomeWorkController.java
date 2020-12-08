@@ -88,6 +88,7 @@ public class HomeWorkController {
     private OrganizationService organizationService;
 
     @ApiOperation(value = "查看作业列表 0 未开始 1 进行中 2 已结束")
+    @UserLoginToken
     @GetMapping(value = "{status}")
     public ResponseResult<List<HomeWork>> listByStatus(@PathVariable(value = "status") short status) {
         Organization organization = organizationService.getCurrentOrganization();
@@ -199,6 +200,7 @@ public class HomeWorkController {
             studentHomeWork.setHomeWork(homeWork);
             studentHomeWork.setStatus((short)1);
             studentHomeWork.setSubTimes(1);
+            studentHomeWork.setSubDate(new Date());
             studentHomeWorkService.update(studentHomeWork);
         }
         // 将附件存到文件夹中 homework + homework.getId()
@@ -225,6 +227,8 @@ public class HomeWorkController {
             studentHomeWork.setStatus((short)1);
             studentHomeWork.setSubTimes(studentHomeWork.getSubTimes() + 1);
             studentHomeWork.setResource(fileName);
+            studentHomeWork.setSubDate(new Date());
+            studentHomeWorkService.update(studentHomeWork);
             return new ResponseResult<>(HttpStatus.OK.value(), "操作成功");
         } catch (FileNotFoundException e) {
             log.error(e.getMessage());
