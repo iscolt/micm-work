@@ -1,14 +1,20 @@
 package icu.miners.micm.work;
+import icu.miners.micm.work.model.entity.Organization;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.sql.Timestamp;
 
 import icu.miners.micm.work.model.base.ResponseResult;
 import icu.miners.micm.work.model.entity.EmailTask;
 import icu.miners.micm.work.model.entity.HomeWork;
+import icu.miners.micm.work.model.entity.Question;
 import icu.miners.micm.work.model.entity.Student;
 import icu.miners.micm.work.service.HomeWorkService;
 import icu.miners.micm.work.service.StudentService;
 import icu.miners.micm.work.utils.EmailUtil;
+import icu.miners.micm.work.utils.ExcelUtil;
 import icu.miners.micm.work.utils.FileUtil;
 import icu.miners.micm.work.utils.ZipUtil;
 import org.apache.commons.jexl3.JexlContext;
@@ -33,6 +39,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
@@ -46,6 +53,52 @@ class MicmWorkApplicationTests {
 
     @Resource
     StudentService studentService;
+
+//    @Test
+//    public void excelTest() throws Exception {
+//        List<Question> questions = new ArrayList<>();
+//        Question question;
+//
+//
+//        String filePath = "E:\\下载\\测试模板.xlsx";
+//        InputStream in = new FileInputStream(filePath);
+//        List<List<Object>> list = ExcelUtil.getBankListByExcel(in, "fileName.xlsx");
+//        in.close();
+//        for (int i = 1; i < list.size(); i++) {
+//            List<Object> objects = list.get(i);
+//            question = new Question();
+//            question.setId(i);
+//            question.setType(objects.get(0).toString());
+//            question.setStem(objects.get(1).toString());
+//            question.setAnswer(objects.get(2).toString());
+//            question.setResolve(objects.get(3).toString());
+//            question.setScore(Double.parseDouble(objects.get(4).toString()));
+//            // 选项为最后几项
+//            question.setOptions("[");
+//            for (int j = 5; j < objects.size(); j++) {
+//                if (j == objects.size()-1) {
+//                    question.setOptions(question.getOptions() + "\"" + objects.get(j).toString() + "\"]");
+//                } else {
+//                    question.setOptions(question.getOptions() + "\"" + objects.get(j).toString() + "\", ");
+//                }
+//            }
+//            question.setOrganization(new Organization());
+////            for (Object object : list.get(i)) {
+////                System.out.println(object.toString());
+////            }
+//            questions.add(question);
+//        }
+//
+//        for (int i = 0; i < questions.size(); i++) {
+//            System.out.println(questions.get(i).toString());
+//        }
+//
+////        for (List<Object> objects : list) {
+////            for (Object object : objects) {
+////                System.out.println(object.toString());
+////            }
+////        }
+//    }
 
 //    @Test
 //    public void initTestAccount() {
