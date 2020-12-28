@@ -50,7 +50,7 @@ public class Question extends BaseEntity implements Serializable {
     @Column(name = "answer", columnDefinition = "text not null")
     private String answer; // 正确答案
 
-    @Column(name = "resolve", columnDefinition = "text not null")
+    @Column(name = "resolve", columnDefinition = "text")
     private String resolve; // 解析
 
     @Column(name = "score")

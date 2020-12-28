@@ -17,6 +17,8 @@ import icu.miners.micm.work.utils.EmailUtil;
 import icu.miners.micm.work.utils.ExcelUtil;
 import icu.miners.micm.work.utils.FileUtil;
 import icu.miners.micm.work.utils.ZipUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlExpression;
@@ -30,6 +32,14 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
+import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
@@ -41,6 +51,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @SpringBootTest
 class MicmWorkApplicationTests {
@@ -53,6 +64,58 @@ class MicmWorkApplicationTests {
 
     @Resource
     StudentService studentService;
+
+    @Autowired
+    WebApplicationContext applicationContext;
+
+    @Test
+    public void getParam(){
+
+        RequestMappingHandlerMapping mapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
+        // 获取url与类和方法的对应信息
+        Map<RequestMappingInfo, HandlerMethod> map = mapping.getHandlerMethods();
+
+        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        for (Map.Entry<RequestMappingInfo, HandlerMethod> m : map.entrySet()) {
+            Map<String, String> map1 = new HashMap<String, String>();
+            RequestMappingInfo info = m.getKey();
+            HandlerMethod method = m.getValue();
+            //获取当前方法所在类名
+            Class<?> bean = method.getBeanType();
+            //使用反射获取当前类注解内容
+            RequestMapping requestMapping = bean.getAnnotation(RequestMapping.class);
+            String[] value = requestMapping.value();
+            map1.put("parent",value[0]);
+            PatternsRequestCondition p = info.getPatternsCondition();
+            for (String url : p.getPatterns()) {
+                map1.put("url", url);
+            }
+            map1.put("className", method.getMethod().getDeclaringClass().getName()); // 类名
+            map1.put("method", method.getMethod().getName()); // 方法名
+            RequestMethodsRequestCondition methodsCondition = info.getMethodsCondition();
+            for (RequestMethod requestMethod : methodsCondition.getMethods()) {
+                map1.put("type", requestMethod.toString());
+            }
+
+            list.add(map1);
+        }
+
+
+        System.out.println(list.toString());
+    }
+
+//    public static void main(String[] args) throws IOException {
+//        FileInputStream fileInputStream = new FileInputStream("E:\\test.txt");
+//        String str = "";
+//        char ch = 0;
+//        int available = fileInputStream.available();
+//        for (int i = 0; i < available; i++) {
+//            ch = (char) fileInputStream.read();
+//            str += String.valueOf(ch);
+//        }
+//        fileInputStream.close();
+//        System.out.println(str);
+//    }
 
 //    @Test
 //    public void excelTest() throws Exception {

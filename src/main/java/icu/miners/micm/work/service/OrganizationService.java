@@ -16,4 +16,6 @@ import icu.miners.micm.work.service.base.CrudService;
  */
 public interface OrganizationService extends CrudService<Organization, Integer> {
     Organization getCurrentOrganization();
+
+    Organization getByName(String name);
 }

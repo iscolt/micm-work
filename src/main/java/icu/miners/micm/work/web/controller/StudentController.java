@@ -115,11 +115,14 @@ public class StudentController {
         if (regParam.getClassName() == null || regParam.getNumber() == null || regParam.getName() == null) {
             return new ResponseResult<>(HttpStatus.EXPECTATION_FAILED.value(), "信息不全");
         }
-        Organization organization = new Organization();
-        organization.setName(regParam.getClassName());
-        organization.setParent(organizationService.fetchById(DEFAULT_CLASS_ID).orElse(null));
-        organization.setStatus((short)0);
-        organizationService.update(organization);
+        Organization organization = organizationService.getByName(regParam.getClassName());
+        if (organization == null) {
+            organization = new Organization();
+            organization.setName(regParam.getClassName());
+            organization.setParent(organizationService.fetchById(DEFAULT_CLASS_ID).orElse(null));
+            organization.setStatus((short)0);
+            organizationService.update(organization);
+        }
 
         Student newStudent = new Student();
         newStudent.setNumber(regParam.getNumber());
@@ -127,7 +130,7 @@ public class StudentController {
         newStudent.setOrganization(organization);
         newStudent.setPassword(DigestUtils.md5DigestAsHex(regParam.getPassword().getBytes()));
         newStudent.setEmail(regParam.getEmail());
-        newStudent.setRole((short)1); // 管理员
+        newStudent.setRole((short)0); // 普通用户
         newStudent.setInit((short)1);
         newStudent.setDeleted(false); // 冻结 false 1 true 0
         studentService.update(newStudent);

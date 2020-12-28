@@ -1,6 +1,7 @@
 package icu.miners.micm.work.service.impl;
 
 import icu.miners.micm.work.model.entity.Organization;
+import icu.miners.micm.work.repository.OrganizationRepository;
 import icu.miners.micm.work.service.OrganizationService;
 import icu.miners.micm.work.service.StudentService;
 import icu.miners.micm.work.service.base.AbstractCrudService;
@@ -26,6 +27,9 @@ public class OrganizationServiceImpl extends AbstractCrudService<Organization, I
     @Resource
     private StudentService studentService;
 
+    @Resource
+    private OrganizationRepository organizationRepository;
+
     protected OrganizationServiceImpl(JpaRepository<Organization, Integer> repository) {
         super(repository);
     }
@@ -33,5 +37,10 @@ public class OrganizationServiceImpl extends AbstractCrudService<Organization, I
     @Override
     public Organization getCurrentOrganization() {
         return studentService.getCurrentUser().getOrganization();
+    }
+
+    @Override
+    public Organization getByName(String name) {
+        return organizationRepository.findByName(name);
     }
 }
